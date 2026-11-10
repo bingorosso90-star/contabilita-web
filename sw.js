@@ -1,4 +1,4 @@
-﻿const VERSIONE = 'v5';
+﻿const VERSIONE = 'v6';
 const CACHE = 'contabilita-' + VERSIONE;
 const PRECACHE = ['.', 'index.html', 'manifest.json'];
 
@@ -58,6 +58,7 @@ async function cacheFirst(request) {
   }
   return response;
 }
+
 
 
 

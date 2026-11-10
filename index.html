@@ -34,6 +34,31 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <div id="velo-privacy" style="position:fixed;inset:0;background:#0A0F16;z-index:2147483647;display:none;align-items:center;justify-content:center;">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#7A9CC4" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="10" width="16" height="11" rx="2.5"></rect>
+      <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+    </svg>
+  </div>
+  <script>
+    (function () {
+      var velo = document.getElementById('velo-privacy');
+      function copri() { velo.style.display = 'flex'; }
+      function scopri() { velo.style.display = 'none'; }
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') { copri(); }
+        else { scopri(); }
+      });
+      window.addEventListener('pagehide', copri);
+      window.addEventListener('pageshow', scopri);
+      window.addEventListener('blur', function () {
+        setTimeout(function () {
+          if (document.visibilityState === 'hidden') copri();
+        }, 80);
+      });
+      window.addEventListener('focus', scopri);
+    })();
+  </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
