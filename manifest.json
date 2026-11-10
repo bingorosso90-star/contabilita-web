@@ -1,11 +1,11 @@
 {
-    "name": "Contabilità",
-    "short_name": "Contabilità",
+    "name": "Note",
+    "short_name": "Note",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#1565C0",
-    "theme_color": "#1565C0",
-    "description": "Contabilità privata cifrata",
+    "background_color": "#0E1621",
+    "theme_color": "#101C2C",
+    "description": "Note private",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
