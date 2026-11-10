@@ -32,6 +32,9 @@
 
   <title>Note</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { background: #0E1621; margin: 0; }
+  </style>
 </head>
 <body>
   <div id="velo-privacy" style="position:fixed;inset:0;background:#0A0F16;z-index:2147483647;display:none;align-items:center;justify-content:center;">
@@ -49,14 +52,11 @@
         if (document.visibilityState === 'hidden') { copri(); }
         else { scopri(); }
       });
+      window.addEventListener('blur', copri);
+      window.addEventListener('focus', scopri);
       window.addEventListener('pagehide', copri);
       window.addEventListener('pageshow', scopri);
-      window.addEventListener('blur', function () {
-        setTimeout(function () {
-          if (document.visibilityState === 'hidden') copri();
-        }, 80);
-      });
-      window.addEventListener('focus', scopri);
+      document.addEventListener('visibilitychange', scopri);
     })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
