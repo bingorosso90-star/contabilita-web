@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="13">
+  <meta name="app-version" content="14">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -81,9 +81,12 @@
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (d) {
             if (d && d.v && String(d.v) !== String(versioneMia)) {
-              if (sessionStorage.getItem('ultima-ricarica') !== String(d.v)) {
-                sessionStorage.setItem('ultima-ricarica', String(d.v));
-                location.reload();
+              var ora = Date.now();
+              var ultimo = Number(sessionStorage.getItem('ultimo-tentativo') || 0);
+              if (ora - ultimo > 30000) {
+                sessionStorage.setItem('ultimo-tentativo', String(ora));
+                var base = location.href.split('?')[0].split('#')[0];
+                location.replace(base + '?agg=' + ora);
               }
             }
           })
@@ -102,12 +105,13 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v13.js');
+        navigator.serviceWorker.register('sw-v14.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
