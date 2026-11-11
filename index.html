@@ -60,31 +60,27 @@
       var yInizio = null;
       document.addEventListener('touchstart', function (e) {
         yInizio = e.touches[0].clientY;
-        if (document.visibilityState === 'visible' && document.hasFocus()) { scopri(); }
+        if (document.visibilityState === 'visible') { scopri(); }
       }, { passive: true });
       document.addEventListener('touchmove', function (e) {
         if (yInizio === null) return;
         var y = e.touches[0].clientY;
         if (yInizio > window.innerHeight - 34 && y < yInizio - 30) { copri(); }
       }, { passive: true });
-      document.addEventListener('touchcancel', function () {
-        copri();
-        setTimeout(function () {
-          if (document.visibilityState === 'visible' && document.hasFocus()) { scopri(); }
-        }, 1200);
-      });
+      document.addEventListener('touchcancel', copri);
     })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v10.js');
+        navigator.serviceWorker.register('sw-v11.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
