@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="12">
+  <meta name="app-version" content="13">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -47,21 +47,26 @@
   <script>
     (function () {
       var velo = document.getElementById('velo-privacy');
-      function copri() { velo.style.display = 'flex'; }
+      var ultimoCopri = 0;
+      function copri() { ultimoCopri = Date.now(); velo.style.display = 'flex'; }
       function scopri() { velo.style.display = 'none'; }
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'hidden') { copri(); }
         else { scopri(); }
       });
       window.addEventListener('blur', copri);
-      window.addEventListener('focus', scopri);
+      window.addEventListener('focus', function () {
+        setTimeout(function () {
+          if (Date.now() - ultimoCopri > 800) { scopri(); }
+        }, 300);
+      });
       window.addEventListener('pagehide', copri);
       window.addEventListener('pageshow', scopri);
 
       var yInizio = null;
       document.addEventListener('touchstart', function (e) {
         yInizio = e.touches[0].clientY;
-        if (document.visibilityState === 'visible') { scopri(); }
+        if (document.visibilityState === 'visible' && Date.now() - ultimoCopri > 500) { scopri(); }
       }, { passive: true });
       document.addEventListener('touchmove', function (e) {
         if (yInizio === null) return;
@@ -97,12 +102,13 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v12.js');
+        navigator.serviceWorker.register('sw-v13.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
