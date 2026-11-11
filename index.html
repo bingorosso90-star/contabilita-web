@@ -31,6 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
+  <meta name="app-version" content="12">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -68,18 +69,41 @@
         if (yInizio > window.innerHeight - 34 && y < yInizio - 30) { copri(); }
       }, { passive: true });
       document.addEventListener('touchcancel', copri);
+
+      var versioneMia = document.querySelector('meta[name="app-version"]').content;
+      function controllaAggiornamento() {
+        fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (d) {
+            if (d && d.v && String(d.v) !== String(versioneMia)) {
+              if (sessionStorage.getItem('ultima-ricarica') !== String(d.v)) {
+                sessionStorage.setItem('ultima-ricarica', String(d.v));
+                location.reload();
+              }
+            }
+          })
+          .catch(function () {});
+      }
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+          setTimeout(controllaAggiornamento, 400);
+        }
+      });
+      setTimeout(controllaAggiornamento, 1500);
+    })();
     })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v11.js');
+        navigator.serviceWorker.register('sw-v12.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
