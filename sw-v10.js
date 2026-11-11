@@ -37,7 +37,12 @@ async function networkFirst(request) {
     if (response && response.ok) {
       const cache = await caches.open(CACHE);
       cache.put(request, response.clone());
+      return response;
     }
+    const cached = await caches.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+    const fallback = await caches.match('index.html');
+    if (fallback) return fallback;
     return response;
   } catch (e) {
     const cached = await caches.match(request, { ignoreSearch: true });
