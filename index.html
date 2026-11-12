@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="15">
+  <meta name="app-version" content="16">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -112,11 +112,25 @@
         });
         testo.value = righe.join('\n') || 'vuoto';
       }
-      palla.addEventListener('click', function () { mostraLog(); pannello.style.display = 'flex'; });
-      document.getElementById('chiudi-spia').addEventListener('click', function () { pannello.style.display = 'none'; });
-      document.getElementById('svuota-spia').addEventListener('click', function () { LOG = []; localStorage.setItem('spia-log', '[]'); mostraLog(); });
-      document.getElementById('copia-spia').addEventListener('click', function () {
+      function suTocco(el, fn) {
+        var bloccato = false;
+        function esegui(ev) {
+          if (bloccato) return;
+          bloccato = true;
+          ev.preventDefault();
+          ev.stopPropagation();
+          fn();
+          setTimeout(function () { bloccato = false; }, 400);
+        }
+        el.addEventListener('touchend', esegui, { passive: false });
+        el.addEventListener('click', esegui);
+      }
+      suTocco(palla, function () { mostraLog(); pannello.style.display = 'flex'; });
+      suTocco(document.getElementById('chiudi-spia'), function () { pannello.style.display = 'none'; });
+      suTocco(document.getElementById('svuota-spia'), function () { LOG = []; localStorage.setItem('spia-log', '[]'); mostraLog(); });
+      suTocco(document.getElementById('copia-spia'), function () {
         testo.select();
+        testo.setSelectionRange(0, 99999);
         var ok = false;
         try { ok = document.execCommand('copy'); } catch (e) {}
         if (!ok && navigator.clipboard) { navigator.clipboard.writeText(testo.value).catch(function () {}); }
@@ -152,12 +166,13 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v15.js');
+        navigator.serviceWorker.register('sw-v16.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
