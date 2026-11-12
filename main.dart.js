@@ -47255,7 +47255,7 @@ B.b.a4(r,p)}r.push(B.rZ)
 m=A.bs(s.gCf()?"Attivo: inserendolo all'apertura cancella TUTTO fingendo un errore":"Non impostato: un codice segreto che cancella tutto se qualcuno ti obbliga ad aprire l'app",o,o,o,o,o,o,o)
 r.push(A.aJf(!1,B.aw,o,o,!0,o,o,o,!0,!0,B.Y6,o,o,o,o,o,!1,o,o,o,o,m,o,B.R9,A.kR(A.bs(s.gCf()?"Rimuovi":"Imposta",o,o,o,o,o,o,o),o,o,new A.ayw(n,s,b,a),o,o),o))
 r.push(B.fb)
-r.push(A.bs("Versione app: 20",o,o,o,A.cg(o,o,B.co,o,o,o,o,o,o,o,o,11,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),B.dc,o,o))
+r.push(A.bs("Versione app: 21",o,o,o,A.cg(o,o,B.co,o,o,o,o,o,o,o,o,11,o,o,o,o,o,!0,o,o,o,o,o,o,o,o),B.dc,o,o))
 r.push(B.fd)
 return A.pe(!0,A.aJT(new A.bx(B.dR,A.dq(r,B.cp,B.W,B.bc),o)),B.aw,!0)},
 $S:134}
