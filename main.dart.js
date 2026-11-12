@@ -47316,7 +47316,7 @@ r.push(A.ahn(!1,B.as,p,p,!0,p,p,p,!0,!0,B.Y8,p,p,p,p,new A.ayC(o,a),!1,p,p,p,p,B
 n=A.bt(s.gCi()?"Attivo: inserendolo all'apertura cancella TUTTO fingendo un errore":"Non impostato: un codice segreto che cancella tutto se qualcuno ti obbliga ad aprire l'app",p,p,p,p,p,p,p)
 r.push(A.ahn(!1,B.as,p,p,!0,p,p,p,!0,!0,B.Yc,p,p,p,p,p,!1,p,p,p,p,n,p,B.Rf,A.jK(A.bt(s.gCi()?"Rimuovi":"Imposta",p,p,p,p,p,p,p),p,p,new A.ayD(o,s,b,a),p,p),p))
 r.push(B.fe)
-r.push(A.bt("Versione app: 18",p,p,p,A.cf(p,p,B.co,p,p,p,p,p,p,p,p,11,p,p,p,p,p,!0,p,p,p,p,p,p,p,p),B.df,p,p))
+r.push(A.bt("Versione app: 19",p,p,p,A.cf(p,p,B.co,p,p,p,p,p,p,p,p,11,p,p,p,p,p,!0,p,p,p,p,p,p,p,p),B.df,p,p))
 r.push(B.fg)
 return A.pg(!0,A.arb(new A.bx(B.dr,A.dq(r,B.cp,B.W,B.bd),p)),B.as,!0)},
 $S:134}
