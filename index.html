@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="19">
+  <meta name="app-version" content="20">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -46,107 +46,68 @@
   </div>
   <script>
     (function () {
-      var t0 = Date.now();
-      var LOG = [];
-      try { LOG = JSON.parse(localStorage.getItem('spia-log') || '[]'); } catch (e) { LOG = []; }
-      var flushTimer = null;
-      function salvaLog() {
-        flushTimer = null;
-        try { localStorage.setItem('spia-log', JSON.stringify(LOG)); } catch (err) {}
-      }
-      function spia(e, extra) {
-        try {
-          LOG.push({ e: e, d: Date.now() - t0, v: document.visibilityState, f: document.hasFocus(), x: extra || '' });
-          if (LOG.length > 300) LOG = LOG.slice(-300);
-          if (flushTimer) clearTimeout(flushTimer);
-          flushTimer = setTimeout(salvaLog, 2500);
-        } catch (err) {}
-      }
-      window.leggiSpia = function () {
-        var righe = LOG.slice(-80).map(function (l) {
-          return '+' + String(l.d).padStart(6, '0') + 'ms  ' + l.e + '  v=' + l.v + ' f=' + l.f + (l.x ? '  ' + l.x : '');
-        });
-        return righe.join('\n') || 'vuoto';
-      };
-      spia('avvio');
-
       var velo = document.getElementById('velo-privacy');
       var ultimoCopri = 0;
-      function copri() { ultimoCopri = Date.now(); velo.style.display = 'flex'; spia('VELO ON', Date.now() - ultimoCopri === 0 ? '' : ''); }
-      function scopri() { velo.style.display = 'none'; spia('VELO OFF'); }
-
+      function copri() { ultimoCopri = Date.now(); velo.style.display = 'flex'; }
+      function scopri() { velo.style.display = 'none'; }
       document.addEventListener('visibilitychange', function () {
-        spia('visibility:' + document.visibilityState);
-        if (document.visibilityState === 'hidden') { salvaLog(); copri(); }
+        if (document.visibilityState === 'hidden') { copri(); }
         else { scopri(); }
       });
-      window.addEventListener('blur', function () { spia('blur'); copri(); });
+      window.addEventListener('blur', copri);
       window.addEventListener('focus', function () {
-        spia('focus');
-        setTimeout(function () {
-          if (Date.now() - ultimoCopri > 800) { scopri(); }
-          else { spia('focus-ignorato'); }
-        }, 300);
+        if (Date.now() - ultimoCopri > 800) { scopri(); }
       });
-      window.addEventListener('pagehide', function () { spia('pagehide'); copri(); });
-      window.addEventListener('pageshow', function () { spia('pageshow'); scopri(); });
+      window.addEventListener('pagehide', copri);
+      window.addEventListener('pageshow', scopri);
 
       var yInizio = null;
       document.addEventListener('touchstart', function (e) {
         yInizio = e.touches[0].clientY;
-        if (yInizio > window.innerHeight - 44) { spia('touchstart-basso y=' + Math.round(yInizio)); }
         if (document.visibilityState === 'visible' && Date.now() - ultimoCopri > 500) { scopri(); }
       }, { passive: true });
       document.addEventListener('touchmove', function (e) {
         if (yInizio === null) return;
         var y = e.touches[0].clientY;
-        if (yInizio > window.innerHeight - 34 && y < yInizio - 30) { spia('swipe-basso', 'da ' + Math.round(yInizio) + ' a ' + Math.round(y)); copri(); }
+        if (yInizio > window.innerHeight - 34 && y < yInizio - 30) { copri(); }
       }, { passive: true });
-      document.addEventListener('touchcancel', function () { spia('touchcancel'); copri(); });
+      document.addEventListener('touchcancel', copri);
 
       var versioneMia = document.querySelector('meta[name="app-version"]').content;
+      var ultimoControllo = 0;
       function controllaAggiornamento() {
-        fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+        var ora = Date.now();
+        if (ora - ultimoControllo < 20000) return;
+        ultimoControllo = ora;
+        fetch('version.json?t=' + ora, { cache: 'no-store' })
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (d) {
-            if (!d || !d.v) { spia('aggiornamento: risposta non valida'); return; }
-            if (String(d.v) === String(versioneMia)) { spia('aggiornamento: gia aggiornata (' + d.v + ')'); return; }
-            var ora = Date.now();
-            var ultimo = Number(sessionStorage.getItem('ultimo-tentativo') || 0);
-            if (ora - ultimo > 30000) {
-              sessionStorage.setItem('ultimo-tentativo', String(ora));
-              spia('aggiornamento: da ' + versioneMia + ' a ' + d.v + ' → ricarico');
+            if (d && d.v && String(d.v) !== String(versioneMia)) {
               var base = location.href.split('?')[0].split('#')[0];
               location.replace(base + '?agg=' + ora);
-            } else {
-              spia('aggiornamento: attesa 30s prima di ritentare');
             }
           })
-          .catch(function (e) { spia('aggiornamento: errore di rete'); });
+          .catch(function () {});
       }
-      window.addEventListener('focus', function () { setTimeout(controllaAggiornamento, 600); });
-      window.addEventListener('pageshow', function () { setTimeout(controllaAggiornamento, 800); });
-      setInterval(function () {
-        if (document.visibilityState === 'visible') { controllaAggiornamento(); }
-      }, 45000);
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible') {
-          setTimeout(controllaAggiornamento, 400);
+          setTimeout(controllaAggiornamento, 500);
         }
       });
-      setTimeout(controllaAggiornamento, 1500);
+      setTimeout(controllaAggiornamento, 2000);
     })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v19.js');
+        navigator.serviceWorker.register('sw-v20.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
