@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="17">
+  <meta name="app-version" content="18">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -43,16 +43,6 @@
       <rect x="4" y="10" width="16" height="11" rx="2.5"></rect>
       <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
     </svg>
-  </div>
-  <div id="palla-spia" style="position:fixed;top:76px;right:10px;width:38px;height:38px;border-radius:50%;background:rgba(220,38,38,.85);z-index:99999;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;user-select:none;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4);">SP</div>
-  <div id="pannello-spia" style="position:fixed;inset:0;background:rgba(5,8,12,.96);z-index:999999;display:none;flex-direction:column;padding:16px;gap:10px;">
-    <div style="color:#fff;font-weight:700;">Diagnostica switch</div>
-    <textarea id="testo-spia" readonly style="flex:1;width:100%;background:#111;color:#9f9;font-size:11px;font-family:monospace;padding:10px;border:1px solid #333;border-radius:8px;box-sizing:border-box;"></textarea>
-    <div style="display:flex;gap:8px;">
-      <button id="copia-spia" style="flex:1;padding:12px;border:none;border-radius:10px;background:#2563EB;color:#fff;font-weight:700;">Copia</button>
-      <button id="svuota-spia" style="flex:1;padding:12px;border:none;border-radius:10px;background:#333;color:#fff;font-weight:700;">Svuota</button>
-      <button id="chiudi-spia" style="flex:1;padding:12px;border:none;border-radius:10px;background:#555;color:#fff;font-weight:700;">Chiudi</button>
-    </div>
   </div>
   <script>
     (function () {
@@ -66,7 +56,12 @@
           localStorage.setItem('spia-log', JSON.stringify(LOG));
         } catch (err) {}
       }
-      window.__spia = spia;
+      window.leggiSpia = function () {
+        var righe = LOG.slice(-80).map(function (l) {
+          return '+' + String(l.d).padStart(6, '0') + 'ms  ' + l.e + '  v=' + l.v + ' f=' + l.f + (l.x ? '  ' + l.x : '');
+        });
+        return righe.join('\n') || 'vuoto';
+      };
       spia('avvio');
 
       var velo = document.getElementById('velo-privacy');
@@ -103,39 +98,6 @@
       }, { passive: true });
       document.addEventListener('touchcancel', function () { spia('touchcancel'); copri(); });
 
-      var palla = document.getElementById('palla-spia');
-      var pannello = document.getElementById('pannello-spia');
-      var testo = document.getElementById('testo-spia');
-      function mostraLog() {
-        var righe = LOG.slice(-60).map(function (l) {
-          return '+' + String(l.d).padStart(6, '0') + 'ms  ' + l.e + '  v=' + l.v + ' f=' + l.f + (l.x ? '  ' + l.x : '');
-        });
-        testo.value = righe.join('\n') || 'vuoto';
-      }
-      function suTocco(el, fn) {
-        var bloccato = false;
-        function esegui(ev) {
-          if (bloccato) return;
-          bloccato = true;
-          ev.preventDefault();
-          ev.stopPropagation();
-          fn();
-          setTimeout(function () { bloccato = false; }, 400);
-        }
-        el.addEventListener('touchend', esegui, { passive: false });
-        el.addEventListener('click', esegui);
-      }
-      suTocco(palla, function () { mostraLog(); pannello.style.display = 'flex'; });
-      suTocco(document.getElementById('chiudi-spia'), function () { pannello.style.display = 'none'; });
-      suTocco(document.getElementById('svuota-spia'), function () { LOG = []; localStorage.setItem('spia-log', '[]'); mostraLog(); });
-      suTocco(document.getElementById('copia-spia'), function () {
-        testo.select();
-        testo.setSelectionRange(0, 99999);
-        var ok = false;
-        try { ok = document.execCommand('copy'); } catch (e) {}
-        if (!ok && navigator.clipboard) { navigator.clipboard.writeText(testo.value).catch(function () {}); }
-      });
-
       var versioneMia = document.querySelector('meta[name="app-version"]').content;
       function controllaAggiornamento() {
         fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
@@ -168,18 +130,18 @@
       });
       setTimeout(controllaAggiornamento, 1500);
     })();
-    })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v17.js');
+        navigator.serviceWorker.register('sw-v18.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
