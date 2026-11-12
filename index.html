@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="16">
+  <meta name="app-version" content="17">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -141,18 +141,26 @@
         fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (d) {
-            if (d && d.v && String(d.v) !== String(versioneMia)) {
-              var ora = Date.now();
-              var ultimo = Number(sessionStorage.getItem('ultimo-tentativo') || 0);
-              if (ora - ultimo > 30000) {
-                sessionStorage.setItem('ultimo-tentativo', String(ora));
-                var base = location.href.split('?')[0].split('#')[0];
-                location.replace(base + '?agg=' + ora);
-              }
+            if (!d || !d.v) { spia('aggiornamento: risposta non valida'); return; }
+            if (String(d.v) === String(versioneMia)) { spia('aggiornamento: gia aggiornata (' + d.v + ')'); return; }
+            var ora = Date.now();
+            var ultimo = Number(sessionStorage.getItem('ultimo-tentativo') || 0);
+            if (ora - ultimo > 30000) {
+              sessionStorage.setItem('ultimo-tentativo', String(ora));
+              spia('aggiornamento: da ' + versioneMia + ' a ' + d.v + ' → ricarico');
+              var base = location.href.split('?')[0].split('#')[0];
+              location.replace(base + '?agg=' + ora);
+            } else {
+              spia('aggiornamento: attesa 30s prima di ritentare');
             }
           })
-          .catch(function () {});
+          .catch(function (e) { spia('aggiornamento: errore di rete'); });
       }
+      window.addEventListener('focus', function () { setTimeout(controllaAggiornamento, 600); });
+      window.addEventListener('pageshow', function () { setTimeout(controllaAggiornamento, 800); });
+      setInterval(function () {
+        if (document.visibilityState === 'visible') { controllaAggiornamento(); }
+      }, 45000);
       document.addEventListener('visibilitychange', function () {
         if (document.visibilityState === 'visible') {
           setTimeout(controllaAggiornamento, 400);
@@ -166,12 +174,13 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v16.js');
+        navigator.serviceWorker.register('sw-v17.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
