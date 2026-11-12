@@ -31,7 +31,7 @@
   <link rel="icon" type="image/png" href="favicon.png"/>
 
   <title>Note</title>
-  <meta name="app-version" content="21">
+  <meta name="app-version" content="22">
   <link rel="manifest" href="manifest.json">
   <style>
     html, body { background: #0E1621; margin: 0; }
@@ -72,32 +72,19 @@
         if (yInizio > window.innerHeight - 34 && y < yInizio - 30) { copri(); }
       }, { passive: true });
       document.addEventListener('touchcancel', copri);
-
-      var versioneMia = document.querySelector('meta[name="app-version"]').content;
-      function controllaAggiornamento() {
-        fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (d) {
-            if (d && d.v && String(d.v) !== String(versioneMia)) {
-              var base = location.href.split('?')[0].split('#')[0];
-              location.replace(base + '?agg=' + Date.now());
-            }
-          })
-          .catch(function () {});
-      }
-      setTimeout(controllaAggiornamento, 2500);
     })();
   </script>
   <script src="flutter_bootstrap.js" async></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function () {
-        navigator.serviceWorker.register('sw-v21.js');
+        navigator.serviceWorker.register('sw-v22.js');
       });
     }
   </script>
 </body>
 </html>
+
 
 
 
